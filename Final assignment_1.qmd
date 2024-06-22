@@ -40,7 +40,6 @@ for (drwNo in start_drwNo:end_drwNo) {
   Sys.sleep(2)
 }
 
-# 결과 출력
 print(all_lotto_numbers)
 ```
 
