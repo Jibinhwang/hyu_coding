@@ -1,0 +1,64 @@
+---
+title: "Final assignment_1"
+format: html
+editor: visual
+---
+
+## 역대 당첨번호 (1000회\~1010회) 크롤링
+
+1000회부터 1010회까지의 로또 당첨번호를 크롤링한다.
+
+```{r}
+library(httr)
+library(rvest)
+
+start_drwNo <- 1000
+end_drwNo <- 1010
+
+all_lotto_numbers <- list()
+
+for (drwNo in start_drwNo:end_drwNo) {
+  url <- 'https://www.dhlottery.co.kr/gameResult.do?method=byWin'
+  
+  data_lotto <- POST(
+    url,
+    body = list(
+      drwNo = as.character(drwNo),
+      dwrNoList = as.character(drwNo)
+    )
+  )
+  
+  lotto_html <- read_html(data_lotto)
+  
+  lotto_numbers <- lotto_html %>%
+    html_nodes(xpath = '//*[@id="article"]/div[2]/div/div[2]/div/div[1]/p/span') %>%
+    html_text() %>%
+    as.numeric()
+  
+  all_lotto_numbers[[as.character(drwNo)]] <- lotto_numbers
+  
+  Sys.sleep(2)
+}
+
+# 결과 출력
+print(all_lotto_numbers)
+```
+
+## 번호별 당첨 횟수를 막대그래프로 시각화
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+all_lotto_numbers_vector <- unlist(all_lotto_numbers)
+
+number_counts <- table(all_lotto_numbers_vector)
+
+df <- as.data.frame(number_counts)
+colnames(df) <- c("Number", "Count")
+
+ggplot(df, aes(x = as.factor(Number), y = Count)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "번호별 당첨횟수", x = "로또숫자", y = "당첨횟수") +
+  theme_minimal()
+```
