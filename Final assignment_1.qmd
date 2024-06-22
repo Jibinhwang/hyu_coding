@@ -11,6 +11,7 @@ editor: visual
 ```{r}
 library(httr)
 library(rvest)
+library(dplyr)
 
 start_drwNo <- 1000
 end_drwNo <- 1010
@@ -47,7 +48,6 @@ print(all_lotto_numbers)
 
 ```{r}
 library(ggplot2)
-library(dplyr)
 
 all_lotto_numbers_vector <- unlist(all_lotto_numbers)
 
